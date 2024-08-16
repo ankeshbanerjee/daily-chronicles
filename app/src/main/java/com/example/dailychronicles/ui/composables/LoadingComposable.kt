@@ -26,5 +26,4 @@ fun LoadingComposable() {
             trackColor = MaterialTheme.colorScheme.primaryContainer,
         )
     }
-
 }
