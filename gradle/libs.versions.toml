@@ -22,6 +22,7 @@ hiltNavigationVersion = "1.0.0"
 jsonSerializationVersion = "1.7.1"
 calendarVersion = "2.6.0-beta04"
 materialVersion = "1.6.8"
+biometricVersion = "1.2.0-alpha05"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -58,6 +59,8 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 calendar = { group = "com.kizitonwose.calendar", name = "compose", version.ref = "calendarVersion"}
 # material compose
 material-compose = { group = "androidx.compose.material", name = "material" , version.ref = "materialVersion"}
+# biometric
+biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometricVersion"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -134,10 +134,6 @@ private fun HomeScreenContent(
                     .padding(horizontal = 18.dp)
                     .padding(top = 14.dp, bottom = 10.dp)
             ) {
-//                Icon(painter = painterResource(id = R.drawable.ic_daily_chronicles_logo), contentDescription = null,
-//                    tint = MaterialTheme.colorScheme.primary,
-//                    modifier = modifier.size(32.dp))
-//                Spacer(modifier = modifier.width(6.dp))
                 Text(text = "Daily Chronicles", fontSize = 26.sp, fontWeight = FontWeight.Thin, color = MaterialTheme.colorScheme.onBackground)
                 Spacer(modifier = modifier.weight(1f))
                 Icon(

@@ -100,5 +100,8 @@ dependencies {
     // material
     implementation(libs.material.compose)
 
+    // biometric
+    implementation(libs.biometric)
+
 }
 

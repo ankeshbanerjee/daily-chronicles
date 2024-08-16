@@ -15,17 +15,15 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dailychronicles.ui.theme.Typography
-import com.example.dailychronicles.viewmodels.MainViewModel
+import com.example.dailychronicles.viewmodels.ThemeViewModel
 
 private val LightColorScheme = lightColorScheme(
     primary = primaryLight,
@@ -124,15 +122,15 @@ data class AppThemeState(
 
 @Composable
 fun DailyChroniclesTheme(
-    mainViewModel: MainViewModel = viewModel(),
+    themeViewModel: ThemeViewModel = viewModel(),
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 
 ) {
-    val isDarkTheme = mainViewModel.isDarkTheme.collectAsState()
-    val toggleTheme = mainViewModel::toggleTheme
+    val isDarkTheme = themeViewModel.isDarkTheme.collectAsState()
+    val toggleTheme = themeViewModel::toggleTheme
     val key = rememberSaveable { mutableStateOf(0) }
 
     LaunchedEffect(key) {

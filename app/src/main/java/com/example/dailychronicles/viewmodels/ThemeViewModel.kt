@@ -7,11 +7,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor() : ViewModel() {
-    private val _isHomeStart = MutableStateFlow(false)
-    val isHomeStart = _isHomeStart.asStateFlow()
+class ThemeViewModel @Inject constructor() : ViewModel() {
+    private val _isDarkTheme = MutableStateFlow(false)
 
-    fun setIsHomeStart(value: Boolean){
-        _isHomeStart.value = value
+    fun toggleTheme(){
+        _isDarkTheme.value = !(_isDarkTheme.value)
     }
+
+    val isDarkTheme = _isDarkTheme.asStateFlow()
 }
