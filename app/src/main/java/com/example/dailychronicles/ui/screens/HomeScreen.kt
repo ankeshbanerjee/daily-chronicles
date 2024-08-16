@@ -103,10 +103,10 @@ private fun HomeScreenContent(
     isDark: Boolean,
     toggleTheme: () -> Unit
 ) {
-    if (isLoading) {
-        LoadingComposable()
-        return
-    }
+//    if (isLoading) {
+//        LoadingComposable()
+//        return
+//    }
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier

@@ -181,10 +181,10 @@ private fun AllNotesScreenContent(
                 .padding(bottom = 14.dp)
                 .fillMaxWidth()
         )
-        if (isLoading) {
-            LoadingComposable()
-            return
-        }
+//        if (isLoading) {
+//            LoadingComposable()
+//            return
+//        }
         LazyColumn {
             items(notes.size) { idx ->
                 NoteCard(note = notes[idx], onDelete = onDelete, onEditPressed = {
