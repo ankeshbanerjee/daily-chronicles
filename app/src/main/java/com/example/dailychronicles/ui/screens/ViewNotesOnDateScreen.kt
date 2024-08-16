@@ -139,12 +139,14 @@ private fun ViewNotesOnDateScreenContent(
         mutableStateOf(0)
     }
 
-    Box(modifier = modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-        .windowInsetsPadding(
-            WindowInsets.systemBars
-        )) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(
+                WindowInsets.systemBars
+            )
+    ) {
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -168,7 +170,7 @@ private fun ViewNotesOnDateScreenContent(
                     text = DateTimeFormatter.ofPattern("MMMM dd, yyyy")
                         .format(LocalDate.parse(date)),
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onBackground
                 )
             }
             OutlinedTextField(
@@ -307,7 +309,7 @@ private fun NoteCard(
                 Icon(
                     Icons.Filled.Edit,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.secondary,
+                    tint = secondaryLight,
                     modifier = modifier
                         .clip(
                             CircleShape
@@ -320,7 +322,7 @@ private fun NoteCard(
                 Icon(
                     Icons.Filled.Delete,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.secondary,
+                    tint = secondaryLight,
                     modifier = modifier
                         .clip(
                             CircleShape

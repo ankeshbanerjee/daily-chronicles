@@ -201,7 +201,7 @@ private fun AddNoteScreenContent(
                 )
             },
             textStyle = TextStyle(
-                color = MaterialTheme.colorScheme.onBackground,
+                color = onBackgroundLight,
                 fontSize = 16.sp
             ),
             colors = TextFieldDefaults.colors(

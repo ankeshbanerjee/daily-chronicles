@@ -43,17 +43,17 @@ class AddNoteScreenViewModel @Inject constructor(private val repository: NoteRep
     }
 
     fun handleAddNote(onNoteCreated: () -> Unit, onError: () -> Unit){
-        val title = noteTitle.value
-        val content = noteContent.value
-        val bgColorIndex = selectedBgColorIndex.value
-        val note = Note(
-            title = title,
-            content = content,
-            dateAdded = date.let { LocalDate.parse(it) } ?: LocalDate.now(),
-            backgroundColor = Constant.BgColorsList[bgColorIndex]
-        )
         viewModelScope.launch {
             try {
+                val title = noteTitle.value
+                val content = noteContent.value
+                val bgColorIndex = selectedBgColorIndex.value
+                val note = Note(
+                    title = title,
+                    content = content,
+                    dateAdded = date?.let { LocalDate.parse(it) } ?: LocalDate.now(),
+                    backgroundColor = Constant.BgColorsList[bgColorIndex]
+                )
                 repository.createNote(note)
                 onNoteCreated()
             } catch (e: Exception){

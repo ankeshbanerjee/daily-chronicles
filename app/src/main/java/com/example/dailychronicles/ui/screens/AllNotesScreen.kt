@@ -155,7 +155,7 @@ private fun AllNotesScreenContent(
             Text(
                 text = "Your Notes",
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onBackground
             )
         }
         OutlinedTextField(
@@ -271,7 +271,7 @@ private fun NoteCard(
                 Icon(
                     Icons.Filled.Edit,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.secondary,
+                    tint = secondaryLight,
                     modifier = modifier
                         .clip(
                             CircleShape
@@ -284,7 +284,7 @@ private fun NoteCard(
                 Icon(
                     Icons.Filled.Delete,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.secondary,
+                    tint = secondaryLight,
                     modifier = modifier
                         .clip(
                             CircleShape

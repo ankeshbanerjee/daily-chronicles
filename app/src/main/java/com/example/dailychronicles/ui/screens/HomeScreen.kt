@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -39,15 +42,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.compose.LocalAppTheme
 import com.example.dailychronicles.AddNote
 import com.example.dailychronicles.AllNotes
 import com.example.dailychronicles.LocalNavController
+import com.example.dailychronicles.R
 import com.example.dailychronicles.ViewNotesOnDate
 import com.example.dailychronicles.room_db.models.Note
 import com.example.dailychronicles.ui.composables.CalendarComposable
@@ -77,12 +84,13 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
         navController.navigate(route = AllNotes)
     }
 
-    val launchedEffectKey = rememberSaveable{
+    val launchedEffectKey = rememberSaveable {
         mutableStateOf(true)
     }
-    LaunchedEffect(key1 = launchedEffectKey.value) {
+    LaunchedEffect(key1 = launchedEffectKey) {
         viewModel.loadNotes()
     }
+    val (isDarkTheme, toggleTheme) = LocalAppTheme.current
     HomeScreenContent(
         navigateToAddNote = navigateToAddNote,
         recentNotes = recentNotes.value,
@@ -90,10 +98,11 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
         onDayPress = onDayPress,
         isLoading = isLoading.value,
         viewAllNotes = ::viewAllNotes,
+        isDark = isDarkTheme,
+        toggleTheme = toggleTheme
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun HomeScreenContent(
     navigateToAddNote: () -> Unit,
@@ -103,8 +112,10 @@ private fun HomeScreenContent(
     onDayPress: (LocalDate) -> Unit,
     isLoading: Boolean,
     viewAllNotes: () -> Unit,
+    isDark: Boolean,
+    toggleTheme: () -> Unit
 ) {
-    if (isLoading){
+    if (isLoading) {
         LoadingComposable()
         return
     }
@@ -116,6 +127,30 @@ private fun HomeScreenContent(
             .windowInsetsPadding(WindowInsets.systemBars)
     ) {
         Column {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 18.dp)
+                    .padding(top = 14.dp, bottom = 10.dp)
+            ) {
+//                Icon(painter = painterResource(id = R.drawable.ic_daily_chronicles_logo), contentDescription = null,
+//                    tint = MaterialTheme.colorScheme.primary,
+//                    modifier = modifier.size(32.dp))
+//                Spacer(modifier = modifier.width(6.dp))
+                Text(text = "Daily Chronicles", fontSize = 26.sp, fontWeight = FontWeight.Thin, color = MaterialTheme.colorScheme.onBackground)
+                Spacer(modifier = modifier.weight(1f))
+                Icon(
+                    painter = painterResource(id = if (isDark) R.drawable.outline_light_mode_24 else R.drawable.outline_mode_night_24),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    modifier = modifier
+                        .clip(CircleShape)
+                        .clickable {
+                            toggleTheme()
+                        }
+                )
+            }
             Box(
                 modifier = modifier
                     .padding(horizontal = 10.dp, vertical = 10.dp)
@@ -242,7 +277,8 @@ private fun NoteCardPreview() {
 @Composable
 private fun HomeScreenPreview() {
     HomeScreenContent(
-        navigateToAddNote = {}, recentNotes = listOf(
+        navigateToAddNote = {},
+        recentNotes = listOf(
             Note(
                 title = "Title",
                 content = "Content",
@@ -294,5 +330,7 @@ private fun HomeScreenPreview() {
         onDayPress = {},
         isLoading = false,
         viewAllNotes = {},
+        isDark = true,
+        toggleTheme = {}
     )
 }

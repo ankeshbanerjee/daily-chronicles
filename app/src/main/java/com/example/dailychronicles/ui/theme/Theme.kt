@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +20,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dailychronicles.ui.theme.Typography
@@ -112,10 +115,10 @@ val unspecified_scheme = ColorFamily(
     Color.Unspecified, Color.Unspecified, Color.Unspecified, Color.Unspecified
 )
 
-val LocalAppTheme = compositionLocalOf { AppThemeState() }
+val LocalAppTheme = compositionLocalOf<AppThemeState> { error("AppTheme provider not found") }
 
 data class AppThemeState(
-    val isDarkTheme: Boolean = false,
+    val isDarkTheme: Boolean,
     val toggleTheme: () -> Unit = {}
 )
 
@@ -128,13 +131,13 @@ fun DailyChroniclesTheme(
     content: @Composable () -> Unit
 
 ) {
-    val appThemeState = mainViewModel.appThemeState.collectAsState()
     val isDarkTheme = mainViewModel.isDarkTheme.collectAsState()
+    val toggleTheme = mainViewModel::toggleTheme
     val key = rememberSaveable { mutableStateOf(0) }
 
     LaunchedEffect(key) {
         if (darkTheme){
-            appThemeState.value.toggleTheme()
+            toggleTheme()
         }
     }
 
@@ -148,7 +151,21 @@ fun DailyChroniclesTheme(
         else -> LightColorScheme
     }
 
-    CompositionLocalProvider(LocalAppTheme provides appThemeState.value) {
+
+    // setting statusbar color
+    val view = LocalView.current
+    if (!view.isInEditMode){
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = colorScheme.background.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !(isDarkTheme.value)
+        }
+    }
+
+    CompositionLocalProvider(LocalAppTheme provides AppThemeState(
+        isDarkTheme = isDarkTheme.value,
+        toggleTheme = toggleTheme
+    )) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = Typography,
