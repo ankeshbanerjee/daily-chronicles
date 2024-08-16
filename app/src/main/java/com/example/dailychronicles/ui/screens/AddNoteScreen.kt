@@ -64,7 +64,7 @@ import com.example.dailychronicles.utils.Constant.Companion.BgColorsList
 import com.example.dailychronicles.utils.showToast
 
 @Composable
-fun AddNoteScreen(viewModel: AddNoteScreenViewModel) {
+fun AddNoteScreen(viewModel: AddNoteScreenViewModel, date: String?) {
     val bgColorIndex = viewModel.selectedBgColorIndex.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
     val goBack = {navController.popBackStack()}
@@ -73,11 +73,12 @@ fun AddNoteScreen(viewModel: AddNoteScreenViewModel) {
         viewModel.handleAddNote(
             onNoteCreated = {
                 showToast(context, "Note added successfully")
-                navController.navigate(Home){
-                    popUpTo(navController.graph.id){
-                        inclusive = true
-                    }
-                }
+//                navController.navigate(Home){
+//                    popUpTo(navController.graph.id){
+//                        inclusive = true
+//                    }
+//                }
+                navController.popBackStack()
             },
             onError = {
                 showToast(context, "Error adding note")
@@ -91,6 +92,7 @@ fun AddNoteScreen(viewModel: AddNoteScreenViewModel) {
         onContentChange = { viewModel.updateNoteContent(it) },
         bgColorIndex = bgColorIndex.value,
         onBgColorChange = { viewModel.updateSelectedBgColorIndex(it) },
+        date = date,
         goBack = goBack,
         addNote = ::addNote
     )
@@ -101,6 +103,7 @@ private fun AddNoteScreenContent(
     modifier: Modifier = Modifier, title: String, onTitleChange: (String) -> Unit,
     content: String, onContentChange: (String) -> Unit,
     bgColorIndex: Int, onBgColorChange: (Int) -> Unit,
+    date: String?,
     goBack: () -> Boolean,
     addNote: () -> Unit,
 ) {
@@ -225,6 +228,7 @@ private fun AddNotesScreenPreview() {
         onContentChange = {},
         bgColorIndex = 0,
         onBgColorChange = {},
+        date = "2021-09-01",
         goBack = {true},
         addNote = {}
     )

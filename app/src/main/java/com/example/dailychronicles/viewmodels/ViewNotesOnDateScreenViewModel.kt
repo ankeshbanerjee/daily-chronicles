@@ -56,7 +56,37 @@ class ViewNotesOnDateScreenViewModel @Inject constructor(
         _filteredNotes.value = _notes.value.filter { note -> note.title.contains(searchQuery.value, ignoreCase = true) }
     }
 
-    init {
-        loadNotesOnDate()
+    fun updateNote(note: Note, onUpdate: () -> Unit) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                noteRepository.updateNote(note)
+                onUpdate()
+                _notes.value = noteRepository.getNotesByDate(LocalDate.parse(_date)).also {
+                    _filteredNotes.value = it
+                }
+                _isLoading.value = false
+            } catch (e: Exception) {
+                Log.e("UpdateNoteError", e.message.toString())
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun deleteNote(note: Note, onDeleted: () -> Unit) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                noteRepository.deleteNote(note)
+                onDeleted()
+                _notes.value = noteRepository.getNotesByDate(LocalDate.parse(_date)).also {
+                    _filteredNotes.value = it
+                }
+                _isLoading.value = false
+            } catch (e: Exception) {
+                Log.e("DeleteNoteError", e.message.toString())
+                _isLoading.value = false
+            }
+        }
     }
 }

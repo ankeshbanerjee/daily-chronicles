@@ -47,8 +47,4 @@ class HomeScreenViewModel @Inject constructor(private val noteRepository: NoteRe
             }
         }
     }
-
-    init {
-        loadNotes()
-    }
 }

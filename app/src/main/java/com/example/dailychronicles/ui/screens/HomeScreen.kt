@@ -20,14 +20,21 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,7 +65,7 @@ import kotlin.random.Random
 fun HomeScreen(viewModel: HomeScreenViewModel) {
     val navController = LocalNavController.current
     val navigateToAddNote = {
-        navController.navigate(AddNote)
+        navController.navigate(route = AddNote(date = null))
     }
     val recentNotes = viewModel.recentNotes.collectAsStateWithLifecycle()
     val noteDates = viewModel.noteDates.collectAsStateWithLifecycle()
@@ -69,16 +76,24 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
     fun viewAllNotes() {
         navController.navigate(route = AllNotes)
     }
+
+    val launchedEffectKey = rememberSaveable{
+        mutableStateOf(true)
+    }
+    LaunchedEffect(key1 = launchedEffectKey.value) {
+        viewModel.loadNotes()
+    }
     HomeScreenContent(
         navigateToAddNote = navigateToAddNote,
         recentNotes = recentNotes.value,
         noteDates = noteDates.value,
         onDayPress = onDayPress,
         isLoading = isLoading.value,
-        viewAllNotes = ::viewAllNotes
+        viewAllNotes = ::viewAllNotes,
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun HomeScreenContent(
     navigateToAddNote: () -> Unit,
@@ -87,7 +102,7 @@ private fun HomeScreenContent(
     noteDates: List<LocalDate>,
     onDayPress: (LocalDate) -> Unit,
     isLoading: Boolean,
-    viewAllNotes: () -> Unit
+    viewAllNotes: () -> Unit,
 ) {
     if (isLoading){
         LoadingComposable()
@@ -168,6 +183,7 @@ private fun HomeScreenContent(
                 tint = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
+
     }
 }
 
@@ -196,7 +212,8 @@ private fun NoteCard(note: Note) {
                 text = content,
                 fontSize = 16.sp,
                 color = Color.Black,
-                maxLines = Random.nextInt(2, 8),
+//                maxLines = Random.nextInt(2, 8),
+                maxLines = 7,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
@@ -276,6 +293,6 @@ private fun HomeScreenPreview() {
         ),
         onDayPress = {},
         isLoading = false,
-        viewAllNotes = {}
+        viewAllNotes = {},
     )
 }

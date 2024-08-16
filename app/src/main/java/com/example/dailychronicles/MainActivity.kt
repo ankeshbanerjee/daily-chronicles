@@ -42,9 +42,10 @@ class MainActivity : ComponentActivity() {
                             val viewModel = hiltViewModel<HomeScreenViewModel>()
                             HomeScreen(viewModel)
                         }
-                        composable<AddNote> {
+                        composable<AddNote> { backStackEntry ->
                             val viewModel = hiltViewModel<AddNoteScreenViewModel>()
-                            AddNoteScreen(viewModel)
+                            val Date = backStackEntry.toRoute<AddNote>()
+                            AddNoteScreen(viewModel, Date.date)
                         }
                         composable<ViewNotesOnDate> { backStackEntry ->
                             val Date = backStackEntry.toRoute<ViewNotesOnDate>()
@@ -66,7 +67,9 @@ class MainActivity : ComponentActivity() {
 data object Home
 
 @Serializable
-data object AddNote
+data class AddNote(
+    val date: String? = null
+)
 
 @Serializable
 data class ViewNotesOnDate(val date: String)

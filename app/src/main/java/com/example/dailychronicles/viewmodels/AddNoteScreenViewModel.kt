@@ -2,8 +2,11 @@ package com.example.dailychronicles.viewmodels
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import com.example.dailychronicles.AddNote
 import com.example.dailychronicles.respositories.NoteRepository
 import com.example.dailychronicles.room_db.models.Note
 import com.example.dailychronicles.utils.Constant
@@ -15,7 +18,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class AddNoteScreenViewModel @Inject constructor(private val repository: NoteRepository) : ViewModel(){
+class AddNoteScreenViewModel @Inject constructor(private val repository: NoteRepository, private val savedStateHandle: SavedStateHandle) : ViewModel(){
     var noteTitle = mutableStateOf("")
         private set
 
@@ -25,6 +28,7 @@ class AddNoteScreenViewModel @Inject constructor(private val repository: NoteRep
     val _selectedBgColorIndex = MutableStateFlow(0)
     var selectedBgColorIndex = _selectedBgColorIndex.asStateFlow()
 
+    private val date = savedStateHandle.toRoute<AddNote>().date
 
     fun updateNoteTitle(input: String){
         noteTitle.value = input
@@ -45,7 +49,7 @@ class AddNoteScreenViewModel @Inject constructor(private val repository: NoteRep
         val note = Note(
             title = title,
             content = content,
-            dateAdded = LocalDate.now(),
+            dateAdded = date.let { LocalDate.parse(it) } ?: LocalDate.now(),
             backgroundColor = Constant.BgColorsList[bgColorIndex]
         )
         viewModelScope.launch {
