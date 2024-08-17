@@ -10,6 +10,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -29,6 +30,7 @@ fun authenticateWithBiometrics(context: FragmentActivity, onSuccess: () -> Unit)
                 super.onAuthenticationSucceeded(result)
                 onSuccess()
             }
+
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
                 showToast(context, "Authentication Error: $errString")
@@ -64,11 +66,12 @@ fun BiometricLoginScreen(modifier: Modifier = Modifier) {
     ) {
         Button(onClick = {
             authenticateWithBiometrics(context, onSuccess = {
-                navController.navigate(Home) {
-                    popUpTo(navController.graph.id) {
-                        inclusive = true
-                    }
-                }
+//                navController.navigate(Home) {
+//                    popUpTo(navController.graph.id) {
+//                        inclusive = true
+//                    }
+//                }
+                navController.popBackStack()
             })
         }, modifier = modifier.align(Alignment.Center)) {
             Text(text = "Unlock")

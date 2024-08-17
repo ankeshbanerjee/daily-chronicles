@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -44,18 +45,25 @@ class MainActivity : FragmentActivity() {
                 val biometricManager = BiometricManager.from(this@MainActivity)
                 when (biometricManager.canAuthenticate(BIOMETRIC_STRONG or Authenticators.DEVICE_CREDENTIAL)) {
                     BiometricManager.BIOMETRIC_SUCCESS -> {
-                        mainViewModel.setIsHomeStart(false)
+                        mainViewModel.setShowLock(false)
                     }
                     BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
-                        mainViewModel.setIsHomeStart(false)
+                        mainViewModel.setShowLock(false)
                     }
                 }
-                val isHomeStart = mainViewModel.isHomeStart.collectAsState()
+                val showLock = mainViewModel.showLock.collectAsState()
                 val navController = rememberNavController()
+                if (!(showLock.value)){
+                    LifecycleStartEffect(key1 = Unit) {
+                        // user has to login with biometric each time the app comes to foreground
+                        navController.navigate( route = BiometricLogin)
+                        onStopOrDispose {  }
+                    }
+                }
                 CompositionLocalProvider(LocalNavController provides navController) {
                     NavHost(
                         navController = navController,
-                        startDestination = if (isHomeStart.value) Home else BiometricLogin
+                        startDestination = Home
                     ) {
                         composable<BiometricLogin> {
                             BiometricLoginScreen()
@@ -83,6 +91,7 @@ class MainActivity : FragmentActivity() {
             }
         }
     }
+
 }
 
 @Serializable

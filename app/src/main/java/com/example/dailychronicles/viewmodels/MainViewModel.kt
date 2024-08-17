@@ -8,10 +8,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor() : ViewModel() {
-    private val _isHomeStart = MutableStateFlow(false)
-    val isHomeStart = _isHomeStart.asStateFlow()
+    private val _showLock = MutableStateFlow(true)
+    val showLock = _showLock.asStateFlow()
 
-    fun setIsHomeStart(value: Boolean){
-        _isHomeStart.value = value
+    fun setShowLock(value: Boolean){
+        _showLock.value = value
     }
 }
