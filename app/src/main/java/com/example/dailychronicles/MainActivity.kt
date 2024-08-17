@@ -10,12 +10,14 @@ import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.compose.DailyChroniclesTheme
@@ -53,10 +55,12 @@ class MainActivity : FragmentActivity() {
                 }
                 val showLock = mainViewModel.showLock.collectAsState()
                 val navController = rememberNavController()
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
                 if (!(showLock.value)){
                     LifecycleStartEffect(key1 = Unit) {
                         // user has to login with biometric each time the app comes to foreground
-                        navController.navigate( route = BiometricLogin)
+                        if (navBackStackEntry?.destination?.route != BiometricLogin::class.qualifiedName)
+                            navController.navigate( route = BiometricLogin)
                         onStopOrDispose {  }
                     }
                 }

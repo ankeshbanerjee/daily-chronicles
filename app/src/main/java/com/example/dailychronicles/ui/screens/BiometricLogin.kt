@@ -1,5 +1,6 @@
 package com.example.dailychronicles.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
@@ -58,6 +59,10 @@ fun authenticateWithBiometrics(context: FragmentActivity, onSuccess: () -> Unit)
 fun BiometricLoginScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current as FragmentActivity
     val navController = LocalNavController.current
+
+    BackHandler {
+
+    }
 
     Box(
         modifier = modifier
