@@ -13,6 +13,7 @@ import androidx.work.WorkerParameters
 import com.example.dailychronicles.MainActivity
 import com.example.dailychronicles.R
 import com.example.dailychronicles.di.MyApplication.Companion.CHANNEL_ID
+import kotlin.random.Random
 
 class NotificationWorker(appContext: Context, workerParams: WorkerParameters) : Worker(appContext, workerParams) {
     override fun doWork(): Result {
@@ -38,12 +39,9 @@ class NotificationWorker(appContext: Context, workerParams: WorkerParameters) : 
             ) {
                 return@with
             }
-            notify(NOTIFICATION_ID, notificationBuilder.build())
+            // notificationId is a unique int for each notification
+            notify(Random.nextInt(), notificationBuilder.build())
         }
         return Result.success()
-    }
-
-    companion object {
-        const val NOTIFICATION_ID = 17
     }
 }
