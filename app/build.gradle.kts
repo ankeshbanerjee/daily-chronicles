@@ -103,5 +103,11 @@ dependencies {
     // biometric
     implementation(libs.biometric)
 
+    // work manager
+    implementation(libs.work.manager)
+
+    // permission
+    implementation(libs.accompanist.permission)
+
 }
 
