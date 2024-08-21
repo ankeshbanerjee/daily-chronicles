@@ -2,7 +2,7 @@ package com.example.dailychronicles.di.modules
 
 import android.content.Context
 import androidx.room.Room
-import com.example.dailychronicles.room_db.db.NoteDatabase
+import com.example.dailychronicles.data.db.database.NoteDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

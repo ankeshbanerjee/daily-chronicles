@@ -34,7 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.dailychronicles.room_db.models.Note
+import com.example.dailychronicles.data.db.models.Note
 import com.example.dailychronicles.utils.Constant
 import com.example.dailychronicles.utils.Constant.Companion.BgColorsList
 import java.time.LocalDate

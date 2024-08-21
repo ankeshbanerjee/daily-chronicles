@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dailychronicles.ui.theme.Typography
-import com.example.dailychronicles.viewmodels.ThemeViewModel
+import com.example.dailychronicles.ui.theme.ThemeViewModel
 
 private val LightColorScheme = lightColorScheme(
     primary = primaryLight,
