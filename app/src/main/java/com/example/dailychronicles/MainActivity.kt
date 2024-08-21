@@ -1,21 +1,21 @@
 package com.example.dailychronicles
 
+import android.Manifest
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleStartEffect
@@ -40,11 +40,7 @@ import com.example.dailychronicles.viewmodels.AllNotesViewModel
 import com.example.dailychronicles.viewmodels.HomeScreenViewModel
 import com.example.dailychronicles.viewmodels.MainViewModel
 import com.example.dailychronicles.viewmodels.ViewNotesOnDateScreenViewModel
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import java.util.concurrent.TimeUnit
 
@@ -53,22 +49,21 @@ val LocalNavController = compositionLocalOf<NavController> { error("No nav contr
 
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
-    @OptIn(ExperimentalPermissionsApi::class)
+
+    companion object {
+        const val PERMISSION_REQUEST_CODE = 0
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val mainViewModel by viewModels<MainViewModel>()
+
+        // request notification permission
+        requestNotificationPermission()
+
         enableEdgeToEdge()
         setContent {
             DailyChroniclesTheme {
-                // request permission for notification
-                val postNotificationPermission =
-                    rememberPermissionState(permission = android.Manifest.permission.POST_NOTIFICATIONS)
-                LaunchedEffect(key1 = true) {
-                    Log.d("launchedMainActivity", "launched")
-                    if (!postNotificationPermission.status.isGranted) {
-                        postNotificationPermission.launchPermissionRequest()
-                    }
-                }
                 // biometric authentication
                 val biometricManager = BiometricManager.from(this@MainActivity)
                 when (biometricManager.canAuthenticate(BIOMETRIC_STRONG or Authenticators.DEVICE_CREDENTIAL)) {
@@ -122,10 +117,35 @@ class MainActivity : FragmentActivity() {
                 }
             }
         }
-        scheduleNotificationWork()
     }
 
-    private fun scheduleNotificationWork(){
+    private fun requestNotificationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS,
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                PERMISSION_REQUEST_CODE
+            )
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE &&  grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            scheduleNotificationWork()
+        }
+    }
+
+    private fun scheduleNotificationWork() {
+        Log.d("ScheduledNotification", "Scheduled")
         val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(12, TimeUnit.HOURS)
             .build()
         WorkManager.getInstance(application).enqueueUniquePeriodicWork(

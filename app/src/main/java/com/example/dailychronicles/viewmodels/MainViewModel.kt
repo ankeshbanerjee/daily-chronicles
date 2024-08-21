@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(@ApplicationContext private val application: Context) : ViewModel() {
+class MainViewModel @Inject constructor() : ViewModel() {
     private val _showLock = MutableStateFlow(true)
     val showLock = _showLock.asStateFlow()
 
