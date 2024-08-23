@@ -5,7 +5,7 @@ import com.example.dailychronicles.data.db.models.Note
 import java.time.LocalDate
 import javax.inject.Inject
 
-class NoteRepository @Inject constructor(private val noteDao: NoteDao) {
+class NoteRepository (private val noteDao: NoteDao) {
 
     suspend fun getAllNotes() = noteDao.getAllNotes()
 

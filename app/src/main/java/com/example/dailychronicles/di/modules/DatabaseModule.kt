@@ -2,7 +2,9 @@ package com.example.dailychronicles.di.modules
 
 import android.content.Context
 import androidx.room.Room
+import com.example.dailychronicles.data.db.dao.NoteDao
 import com.example.dailychronicles.data.db.database.NoteDatabase
+import com.example.dailychronicles.data.respository.NoteRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,5 +21,9 @@ object DatabaseModule {
         Room.databaseBuilder(context, NoteDatabase::class.java, "note_database").build()
 
     @Provides
-    fun providesNoteDao(noteDb: NoteDatabase) = noteDb.noteDao()
+    fun providesNoteDao(noteDb: NoteDatabase): NoteDao = noteDb.noteDao()
+
+    @Provides
+    @Singleton
+    fun providesNoteRepository(noteDao: NoteDao): NoteRepository = NoteRepository(noteDao)
 }

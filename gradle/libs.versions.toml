@@ -24,7 +24,6 @@ calendarVersion = "2.6.0-beta04"
 materialVersion = "1.6.8"
 biometricVersion = "1.2.0-alpha05"
 workVersion = "2.9.1"
-accompanistVersion = "0.35.1-alpha"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

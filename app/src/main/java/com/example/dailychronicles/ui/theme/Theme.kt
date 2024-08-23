@@ -1,6 +1,9 @@
 package com.example.compose
+
 import android.app.Activity
+import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
@@ -123,7 +126,7 @@ data class AppThemeState(
 @Composable
 fun DailyChroniclesTheme(
     themeViewModel: ThemeViewModel = viewModel(),
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    // darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
@@ -132,9 +135,16 @@ fun DailyChroniclesTheme(
     val isDarkTheme = themeViewModel.isDarkTheme.collectAsState()
     val toggleTheme = themeViewModel::toggleTheme
     val key = rememberSaveable { mutableStateOf(0) }
+    val context = LocalContext.current
+    val sharedPrefs = context.getSharedPreferences("theme", Context.MODE_PRIVATE) ?: null
+    val isSystemDark = isSystemInDarkTheme()
 
     LaunchedEffect(key) {
-        if (darkTheme){
+        Log.d("Theme", "prefs ${sharedPrefs?.getBoolean("isDark", isSystemDark)}")
+        if (
+            (sharedPrefs == null && isSystemDark == true) ||
+            (sharedPrefs != null && sharedPrefs.getBoolean("isDark", isSystemDark))
+        ) {
             toggleTheme()
         }
     }
@@ -142,7 +152,9 @@ fun DailyChroniclesTheme(
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (isDarkTheme.value) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (isDarkTheme.value) dynamicDarkColorScheme(context) else dynamicLightColorScheme(
+                context
+            )
         }
 
         isDarkTheme.value -> DarkColorScheme
@@ -152,18 +164,21 @@ fun DailyChroniclesTheme(
 
     // setting statusbar color
     val view = LocalView.current
-    if (!view.isInEditMode){
+    if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.background.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !(isDarkTheme.value)
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
+                !(isDarkTheme.value)
         }
     }
 
-    CompositionLocalProvider(LocalAppTheme provides AppThemeState(
-        isDarkTheme = isDarkTheme.value,
-        toggleTheme = toggleTheme
-    )) {
+    CompositionLocalProvider(
+        LocalAppTheme provides AppThemeState(
+            isDarkTheme = isDarkTheme.value,
+            toggleTheme = toggleTheme
+        )
+    ) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = Typography,

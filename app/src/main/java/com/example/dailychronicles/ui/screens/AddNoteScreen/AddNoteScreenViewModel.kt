@@ -18,7 +18,10 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class AddNoteScreenViewModel @Inject constructor(private val repository: NoteRepository, private val savedStateHandle: SavedStateHandle) : ViewModel(){
+class AddNoteScreenViewModel @Inject constructor(
+    private val repository: NoteRepository,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
     var noteTitle = mutableStateOf("")
         private set
 
@@ -30,11 +33,11 @@ class AddNoteScreenViewModel @Inject constructor(private val repository: NoteRep
 
     private val date = savedStateHandle.toRoute<AddNote>().date
 
-    fun updateNoteTitle(input: String){
+    fun updateNoteTitle(input: String) {
         noteTitle.value = input
     }
 
-    fun updateNoteContent(input: String){
+    fun updateNoteContent(input: String) {
         noteContent.value = input
     }
 
@@ -42,7 +45,7 @@ class AddNoteScreenViewModel @Inject constructor(private val repository: NoteRep
         _selectedBgColorIndex.value = idx
     }
 
-    fun handleAddNote(onNoteCreated: () -> Unit, onError: () -> Unit){
+    fun handleAddNote(onNoteCreated: () -> Unit, onError: () -> Unit) {
         viewModelScope.launch {
             try {
                 val title = noteTitle.value
@@ -56,7 +59,7 @@ class AddNoteScreenViewModel @Inject constructor(private val repository: NoteRep
                 )
                 repository.createNote(note)
                 onNoteCreated()
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e("CreateNoteError", e.message.toString())
                 onError()
             }
