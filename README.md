@@ -5,7 +5,7 @@ App name - **Daily Chronicles**
 
 Daily Chronicles is an android app which you can use as your personal diary.
 
-**Download and test the app:** [Click here](https://drive.google.com/file/d/1eyCSmHF7JizCztu8Lwy6TAEl1osCzGNu/view?usp=sharing) to get the .apk file and explore its features!
+**Download and test the app:** [Click here](https://drive.google.com/file/d/1rsvmP_dwThj3adArdqk2Ss4RQYrRfPK4/view?usp=sharing) to get the .apk file and explore its features!
 
 ## Features
 
