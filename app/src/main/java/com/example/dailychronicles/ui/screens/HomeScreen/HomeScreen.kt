@@ -1,5 +1,9 @@
 package com.example.dailychronicles.ui.screens.HomeScreen
 
+import android.Manifest
+import android.app.PendingIntent
+import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -33,23 +37,32 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.TaskStackBuilder
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.compose.LocalAppTheme
 import com.example.dailychronicles.app.host.AddNote
 import com.example.dailychronicles.app.host.AllNotes
 import com.example.dailychronicles.app.host.LocalNavController
 import com.example.dailychronicles.R
+import com.example.dailychronicles.app.android.MyApplication.Companion.CHANNEL_ID
+import com.example.dailychronicles.app.host.MainActivity
 import com.example.dailychronicles.app.host.ViewNotesOnDate
 import com.example.dailychronicles.data.db.models.Note
 import com.example.dailychronicles.ui.screens.HomeScreen.components.CalendarComposable
 import com.example.dailychronicles.ui.screens.HomeScreen.components.NoteCard
 import com.example.dailychronicles.utils.Constant
 import java.time.LocalDate
+import kotlin.random.Random
 
 @Composable
 fun HomeScreen(viewModel: HomeScreenViewModel) {
@@ -181,6 +194,7 @@ private fun HomeScreenContent(
                 }
             }
         }
+        val context = LocalContext.current
         FloatingActionButton(
             onClick = navigateToAddNote,
             shape = CircleShape,

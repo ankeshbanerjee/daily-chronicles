@@ -8,6 +8,8 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.TaskStackBuilder
+import androidx.core.net.toUri
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.dailychronicles.app.host.MainActivity
@@ -17,18 +19,36 @@ import kotlin.random.Random
 
 class NotificationWorker(appContext: Context, workerParams: WorkerParameters) : Worker(appContext, workerParams) {
     override fun doWork(): Result {
-        val intent = Intent(applicationContext, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//        val intent = Intent(applicationContext, MainActivity::class.java).apply {
+//            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//        }
+//
+//        val pendingIntent : PendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
+        showNotification()
+        return Result.success()
+    }
+
+    private fun showNotification(){
+        val deepLinkIntent = Intent(
+            Intent.ACTION_VIEW,
+            "https://www.example.com/addnote".toUri(),
+            applicationContext,
+            MainActivity::class.java
+        )
+
+        val deepLinkPendingIntent: PendingIntent? = TaskStackBuilder.create(applicationContext).run {
+            addNextIntentWithParentStack(deepLinkIntent)
+            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
         }
 
-        val pendingIntent : PendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         val notificationBuilder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("Capture Today’s Moments!")
             .setContentText("Don't let the day slip away! Take a minute to jot down your thoughts or memories.")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             // Set the intent that fires when the user taps the notification.
-            .setContentIntent(pendingIntent)
+            .setContentIntent(deepLinkPendingIntent)
             .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(applicationContext)) {
@@ -42,6 +62,6 @@ class NotificationWorker(appContext: Context, workerParams: WorkerParameters) : 
             // notificationId is a unique int for each notification
             notify(Random.nextInt(), notificationBuilder.build())
         }
-        return Result.success()
     }
+
 }

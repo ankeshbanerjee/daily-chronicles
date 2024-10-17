@@ -24,6 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
@@ -98,7 +99,11 @@ class MainActivity : FragmentActivity() {
                             val viewModel = hiltViewModel<HomeScreenViewModel>()
                             HomeScreen(viewModel)
                         }
-                        composable<AddNote> { backStackEntry ->
+                        composable<AddNote> (
+                            deepLinks = listOf(
+                                navDeepLink<AddNote>("https://www.example.com/addnote")
+                            )
+                        ){ backStackEntry ->
                             val viewModel = hiltViewModel<AddNoteScreenViewModel>()
                             val dateArg = backStackEntry.toRoute<AddNote>()
                             AddNoteScreen(viewModel, dateArg.date)
